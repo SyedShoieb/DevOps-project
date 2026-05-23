@@ -2,23 +2,26 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'syedshoieb/devops-app'
-        CONTAINER_NAME = 'devops-container'
+        DOCKER_IMAGE = "syedshoieb/devops-app:latest"
+        K8S_SERVER = "51.21.254.152"
     }
 
     stages {
 
+        stage('Clone Code') {
+            steps {
+                git 'https://github.com/SyedShoieb/DevOps-project.git'
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
-                script {
-                    sh 'docker build -t $DOCKER_IMAGE .'
-                }
+                sh 'docker build -t $DOCKER_IMAGE .'
             }
         }
 
         stage('Push Docker Image') {
             steps {
-
                 withCredentials([usernamePassword(
                     credentialsId: 'dockerhub-creds',
                     usernameVariable: 'DOCKER_USER',
@@ -32,22 +35,13 @@ pipeline {
             }
         }
 
-        stage('Deploy Container') {
+        stage('Deploy to Kubernetes') {
             steps {
-                script {
-
-                    sh '''
-                    docker stop $CONTAINER_NAME || true
-                    docker rm $CONTAINER_NAME || true
-
-                    docker pull $DOCKER_IMAGE
-
-                    docker run -d \
-                    --name $CONTAINER_NAME \
-                    -p 80:3000 \
-                    $DOCKER_IMAGE
-                    '''
-                }
+                sh """
+                ssh -o StrictHostKeyChecking=no ubuntu@$K8S_SERVER '
+                sudo kubectl rollout restart deployment devops-app
+                '
+                """
             }
         }
     }
