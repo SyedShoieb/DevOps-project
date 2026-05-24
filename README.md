@@ -16,7 +16,7 @@ The pipeline automates:
 
 # Tech Stack
 
-* AWS EC2
+* AWS EC2,VPC
 * Jenkins
 * Docker
 * Docker Hub
@@ -98,12 +98,15 @@ Developer Push → GitHub → Webhook → Jenkins Pipeline → Docker Build → 
 # Folder Structure
 
 .
+├──.dockerignore
 ├── Dockerfile
 ├── Jenkinsfile
 ├── deployment.yaml
 ├── service.yaml
 ├── package.json
-├── src/
+├── index.html
+├── style.css
+├── server.js
 └── README.md
 
 ---
