@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "syedshoieb/devops-app:latest"
-        K8S_SERVER = "51.21.254.152"
+        K8S_SERVER = "13.53.170.154"
     }
 
     stages {
